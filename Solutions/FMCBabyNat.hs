@@ -34,18 +34,24 @@ infixl 6 +
 
 -- Output: O means False, S O means True
 isZero :: Nat -> Nat
-isZero = undefined
+isZero O = S O -- Se digitar zero, a função vai retornar verdadeiro (retorna 1)
+isZero (S n) = O -- Se ditigar algo != 0, a função vai retornar falso (retorna 0)
 
 -- pred is the predecessor but we define zero's to be zero
 pred :: Nat -> Nat
-pred = undefined
+pred O = O -- pred de zero é zero
+pred (S n) = n -- pred de Sn é n
 
 -- Output: O means False, S O means True
 even :: Nat -> Nat
-even = undefined
+even O = S O 
+even (S O) = O
+even (S(S n)) = even n
 
 odd :: Nat -> Nat
-odd = undefined
+odd O = O 
+odd (S O) = S O
+odd (S(S n)) = odd n
 
 -- This is called the dotminus or monus operator
 -- (also: proper subtraction, arithmetic subtraction, ...).
