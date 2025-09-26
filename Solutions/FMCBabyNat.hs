@@ -44,40 +44,49 @@ pred (S n) = n -- pred de Sn é n
 
 -- Output: O means False, S O means True
 even :: Nat -> Nat
-even O = S O 
-even (S O) = O
-even (S(S n)) = even n
+even O = S O  -- zero é par? sim, retorna S O (true)
+even (S O) = O -- um é par? não, retorna O (false)
+even (S(S n)) = even n -- o succ do succ de N é par? retorna se N é par
 
 odd :: Nat -> Nat
-odd O = O 
-odd (S O) = S O
-odd (S(S n)) = odd n
+odd O = O -- zero é ímpar? não, retorna O (false)
+odd (S O) = S O -- um é ímpar? sim, retorna S O (true)
+odd (S(S n)) = odd n -- o succ do succ de N é ímpar? retorna se N é ímpar
 
 -- This is called the dotminus or monus operator
 -- (also: proper subtraction, arithmetic subtraction, ...).
 -- It behaves like subtraction, except that it returns 0
 -- when "normal" subtraction would return a negative number.
 monus :: Nat -> Nat -> Nat
-monus = undefined
+monus a O = a -- a - 0 = 0
+monus O (S _) = O -- 0 - (a > 0) = 0
+monus (S a) (S b) = monus a b -- Sa - Sb = a - b
 
 (-*) :: Nat -> Nat -> Nat
 (-*) = monus
 
 -- multiplication
 (*) :: Nat -> Nat -> Nat
-(*) = undefined
+(*) a O = O          -- a * 0 = 0
+(*) a (S O) = a      -- a * 1 = a  
+(*) a (S b) = a + (a * b)  -- a * (b+1) = a + (a * b)
+
 
 infixl 7 *
 
 -- exponentiation
 (^) :: Nat -> Nat -> Nat
-(^) = undefined
+(^) a O = S O -- a^0 = 1
+(^) a (S O) = a -- a^(S O) = a
+(^) a (S b) = a * (a ^ b) -- a^b+1 = a * (a^b)
 
 -- decide: infix? ? ^
 
 -- quotient
 (/) :: Nat -> Nat -> Nat
-(/) = undefined
+(/) a (S O) = a -- a/1 = a
+(/) O a = O -- 0/a = 0
+(/) a O = undefined
 
 -- remainder
 (%) :: Nat -> Nat -> Nat
