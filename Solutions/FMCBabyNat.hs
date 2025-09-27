@@ -82,27 +82,55 @@ infixl 7 *
 
 -- decide: infix? ? ^
 
+-- Definindo >=
+(>=) :: Nat -> Nat -> Nat
+(>=) O O = (S O) -- Retorna true
+(>=) O (S a) = O -- Retorna false
+(>=) (S a) O = (S O) -- Retorna true
+(>=) (S a) (S b) = a b
+
 -- quotient
 (/) :: Nat -> Nat -> Nat
 (/) a (S O) = a -- a/1 = a
 (/) O a = O -- 0/a = 0
 (/) a O = undefined
-
+(/) a b =
+  case a < b of
+    S O -> O 
+    O -> S ((a -* b)/b)
+   
 -- remainder
 (%) :: Nat -> Nat -> Nat
-(%) = undefined
+(%) a O = undefined
+(%) a b = a -* ((a / b) * b)
 
 -- divides
 -- just for a change, we start by defining the "symbolic" operator
 -- and then define `devides` as a synonym to it
 -- again, outputs: O means False, S O means True
 (|||) :: Nat -> Nat -> Nat
-(|||) = undefined
+(|||) a O = undefined
+(|||) O a = (S O) --Qualquer Nat divide o zero
+(|||) a b = isZero (a % b) --Verifica se o resto da divisão é zero
+
+
+-- Definindo <
+(<) :: Nat -> Nat -> Nat
+(<) O O = O --Retorna false
+(<) O (S a) = S O --Retorna true
+(<) (S a) O = O --Retorna false
+(<) (S a) (S b) = a < b
 
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the actual minus operator we know from the integers!)
 absDiff :: Nat -> Nat -> Nat
-absDiff = undefined
+absDiff a O = a  -- |a - 0| = a
+absDiff O a = a  -- |0 - b| = b
+absDiff a b = 
+  case (a <* b) of
+    O -> a -* b    -- Quando a >= b: a - b
+    (S O) -> b -* a  -- Quando a < b: b - a
+
 
 (|-|) :: Nat -> Nat -> Nat
 (|-|) = absDiff
