@@ -136,15 +136,19 @@ absDiff a b =
 (|-|) = absDiff
 
 factorial :: Nat -> Nat
-factorial O = (S O)
-factorial (S O) = (S O)
-factorial (S a) = (S a) * factorial a
+factorial O = (S O) -- Fatorial de 0 é 1 
+factorial (S O) = (S O) -- Fatorial de 1 é 1
+factorial (S a) = (S a) * factorial a -- Fatorial de a é a * (a-1)!
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
-sg = undefined
+sg O = O  -- Zero retorna O
+sg (S a) = S O -- Qualquer número positivo retorna (S O)
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo = undefined
-
+lo a O = undefined  -- log a(0) 
+lo O a = undefined  -- log 0(a)  
+lo (S O) a = undefined -- log 1(a) 
+lo a (S O) = O -- log a(1) = 0 
+lo b a = S (lo b (a / b)) -- succ de log b(a/b)
