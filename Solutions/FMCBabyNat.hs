@@ -136,7 +136,9 @@ absDiff a b =
 (|-|) = absDiff
 
 factorial :: Nat -> Nat
-factorial = undefined
+factorial O = (S O)
+factorial (S O) = (S O)
+factorial (S a) = (S a) * factorial a
 
 -- signum of a number (-1, 0, or 1)
 sg :: Nat -> Nat
