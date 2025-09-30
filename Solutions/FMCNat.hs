@@ -88,7 +88,7 @@ eight = S seven
 
 isZero :: Nat -> Nat
 isZero O = S O -- Se digitar zero, a função vai retornar verdadeiro (retorna 1)
-isZero (S n) = O -- Se ditigar algo != 0, a função vai retornar falso (retorna 0)
+isZero (S n) = O -- Se digitar algo != 0, a função vai retornar falso (retorna 0)
 
 -- pred is the predecessor but we define zero's to be zero
 pred :: Nat -> Nat
@@ -112,7 +112,9 @@ odd (S(S n)) = odd n -- o succ do succ de N é ímpar? retorna se N é ímpar
 
 -- addition
 (<+>) :: Nat -> Nat -> Nat
-(<+>) = undefined
+(<+>) a O = a
+(<+>) O a = a
+(<+>) (S a) b = S (a <+> b)
 
 -- This is called the dotminus or monus operator
 -- (also: proper subtraction, arithmetic subtraction, ...).
@@ -121,44 +123,56 @@ odd (S(S n)) = odd n -- o succ do succ de N é ímpar? retorna se N é ímpar
 
 monus :: Nat -> Nat -> Nat
 monus a O = a -- a - 0 = 0
-monus O (S _) = O -- 0 - (a > 0) = 0
+monus O (S a) = O -- 0 - (a > 0) = 0
 monus (S a) (S b) = monus a b -- Sa - Sb = a - b
 
 (-*) :: Nat -> Nat -> Nat
-(-*) = undefined
+(-*) = monus
 
 -- multiplication
 times :: Nat -> Nat -> Nat
-times = undefined
+times a O = O 
+times (S a) b = (times a b) <+> b 
 
 (<*>) :: Nat -> Nat -> Nat
 (<*>) = times
 
 -- power / exponentiation
 pow :: Nat -> Nat -> Nat
-pow = undefined
+pow a O = (S O)
+pow O a = O 
+pow a (S b) = a <*> (pow a b)
 
 exp :: Nat -> Nat -> Nat
-exp = undefined
+exp = pow
 
 (<^>) :: Nat -> Nat -> Nat
-(<^>) = undefined
+(<^>) = pow
 
 -- quotient
 (</>) :: Nat -> Nat -> Nat
-(</>) = undefined
+(</>) a (S O) = a -- a/1 = a
+(</>) O a = O -- 0/a = 0
+(</>) a O = undefined
+(</>) a b =
+  case (a < b) of
+    S O -> O 
+    O -> S ((a -* b)</> b)
 
 -- remainder
 (<%>) :: Nat -> Nat -> Nat
-(<%>) = undefined
+(<%>) a O = undefined
+(<%>) a b = a -* ((a </> b) <*> b)
 
 -- euclidean division
 eucdiv :: (Nat, Nat) -> (Nat, Nat)
-eucdiv = undefined
+eucdiv (a, b) = (a</>b, a<%>b)
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
-(<|>) = undefined
+(<|>) a O = False
+(<|>) O a = True --Qualquer Nat divide o zero
+(<|>) a b = isZero (a % b) --Verifica se o resto da divisão é zero
 
 divides = (<|>)
 
@@ -167,7 +181,12 @@ divides = (<|>)
 -- x `dist` y = |x - y|
 -- (Careful here: this - is the real minus operator!)
 dist :: Nat -> Nat -> Nat
-dist = undefined
+dist a O = a  -- |a - 0| = a
+dist O a = a  -- |0 - a| = a
+dist a b = 
+  case (a <* b) of
+    O -> a -* b    -- Quando a >= b: a - b
+    (S O) -> b -* a  -- Quando a < b: b - a
 
 (|-|) = dist
 
