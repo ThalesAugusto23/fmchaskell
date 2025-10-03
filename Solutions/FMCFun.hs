@@ -37,7 +37,7 @@ flip f b a = f a b
 -- think: why would we ever want that?
 
 ($) :: (a -> b) -> a -> b
-($ ) f x = f x
+($) f x = f x
 
 -- iterate: figure it out by its type
 iterate :: (a -> a) -> a -> [a]
