@@ -58,28 +58,36 @@ write [u,v]     for our u `Cons` (v `Cons` Nil)
 -}
 
 head :: [a] -> a
-head = undefined
+head (x:a) = x
+head [] = undefined
 
 tail :: [a] -> [a]
-tail = undefined
+tail (a:xs) = xs
+tail [] = undefined
 
 null :: [a] -> Bool
-null = undefined
+null [] = True
+null _ = False
 
 length :: Integral i => [a] -> i
-length = undefined
+length [] = 0
+length (a:xs) = 1 + length xs
 
 sum :: Num a => [a] -> a
-sum = undefined
+sum [] = 0
+sum (x:xs) = x + sum xs
 
 product :: Num a => [a] -> a
-product = undefined
+product [] = 1
+product (x:xs) = x * product xs
 
 reverse :: [a] -> [a]
-reverse = undefined
+reverse [] = []
+reverse (x:xs) = reverse xs ++ [x]
 
 (++) :: [a] -> [a] -> [a]
-(++) = undefined
+(++) [] ys = ys
+(++) (x:xs) ys = x : (xs ++ ys)
 
 -- right-associative for performance!
 -- (what?!)
@@ -87,16 +95,17 @@ infixr 5 ++
 
 -- (snoc is cons written backwards)
 snoc :: a -> [a] -> [a]
-snoc = undefined
+snoc x [] = [x]
+snoc x (y:ys) = y : snoc x ys
 
 (<:) :: [a] -> a -> [a]
 (<:) = flip snoc
 
 -- different implementation of (++)
 (+++) :: [a] -> [a] -> [a]
-xs +++ []     = xs
-xs +++ [y]    = xs <: y
-xs +++ (y:ys) = (xs +++ [y]) +++ ys
+(+++) xs []     = xs
+(+++) xs [y]    = xs <: y
+(+++) xs (y:ys) = (xs +++ [y]) +++ ys
 
 -- left-associative for performance!
 -- (hmm?!)
@@ -106,7 +115,16 @@ infixl 5 +++
 -- maximum :: Ord a => [a] -> a
 
 -- take
+take :: Int -> [a] -> [a]
+take 0 a = []
+take a [] = []
+take n (x:xs) = x : take (n-1) xs
+
 -- drop
+drop :: Int -> [a] -> [a]
+drop 0 xs = xs
+drop a [] = []
+drop n (a:xs) = drop (n-1) xs
 
 -- takeWhile
 -- dropWhile
@@ -133,7 +151,16 @@ infixl 5 +++
 -- (!!)
 
 -- filter
+filter :: (a -> Bool) -> [a] -> [a]
+filter a [] = []
+filter p (x:xs)
+  | p x = x : filter p xs
+  | otherwise = filter p xs
+
 -- map
+map :: (a -> b) -> [a] -> [b]
+map a [] = []
+map f (x:xs) = f x : map f xs
 
 -- cycle
 -- repeat
