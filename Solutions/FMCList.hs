@@ -112,7 +112,16 @@ snoc x (y:ys) = y : snoc x ys
 infixl 5 +++
 
 -- minimum :: Ord a => [a] -> a
+minimum :: Ord a => [a] -> a
+minimum [] = error "minimum: empty list"
+minimum [x] = x
+minimum (x:xs) = min x (minimum xs)
+
 -- maximum :: Ord a => [a] -> a
+maximum :: Ord a => [a] -> a
+maximum [] = error "maximum: empty list"
+maximum [x] = x
+maximum (x:xs) = max x (maximum xs)
 
 -- take
 take :: Int -> [a] -> [a]
@@ -127,7 +136,12 @@ drop a [] = []
 drop n (a:xs) = drop (n-1) xs
 
 -- takeWhile
+takeWhile :: (a -> Bool) -> [a] -> [a]
+takeWhile b (x : xs) = if b x then x : takeWhile b xs else []
+
 -- dropWhile
+dropWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile b (x : xs) = if b x then dropWhile b xs else x : xs
 
 -- tails
 -- init
@@ -139,9 +153,19 @@ drop n (a:xs) = drop (n-1) xs
 -- all
 
 -- and
+and :: [Bool] -> Bool
+and [] = True
+and (x:xs) = x && and xs
+
 -- or
+or :: [Bool] -> Bool
+or [] = False
+or (x:xs) = x || or xs
 
 -- concat
+concat :: [[a]] -> [a]
+concat [] = []
+concat (xs:xss) = xs ++ concat xss
 
 -- elem using the funciton 'any' above
 
