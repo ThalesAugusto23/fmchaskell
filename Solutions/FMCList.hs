@@ -78,16 +78,12 @@ sum [] = 0
 sum (x:xs) = x + sum xs
 
 product :: Num a => [a] -> a
-product [] = 1
+product [] = (S O)
 product (x:xs) = x * product xs
 
 reverse :: [a] -> [a]
 reverse [] = []
-reverse (x:xs) = reverse xs ++ [x]
-
-(++) :: [a] -> [a] -> [a]
-(++) [] ys = ys
-(++) (x:xs) ys = x : (xs ++ ys)
+reverse (x:xs) = reverse xs ++ [x] -- Concatena o resto com o início
 
 -- right-associative for performance!
 -- (what?!)
@@ -96,7 +92,7 @@ infixr 5 ++
 -- (snoc is cons written backwards)
 snoc :: a -> [a] -> [a]
 snoc x [] = [x]
-snoc x (y:ys) = y : snoc x ys
+snoc x (y:ys) = y : snoc x ys -- Adiciona o elemento no final (literalmente o contrário do cons)
 
 (<:) :: [a] -> a -> [a]
 (<:) = flip snoc
@@ -113,59 +109,71 @@ infixl 5 +++
 
 -- minimum :: Ord a => [a] -> a
 minimum :: Ord a => [a] -> a
-minimum [] = error "minimum: empty list"
-minimum [x] = x
-minimum (x:xs) = min x (minimum xs)
+minimum [] = undefined
+minimum [x] = x -- Só tem um elemento, então ele é o min
+minimum (x:xs) = min x (minimum xs) -- Compare o X com o min de xs
 
 -- maximum :: Ord a => [a] -> a
 maximum :: Ord a => [a] -> a
-maximum [] = error "maximum: empty list"
-maximum [x] = x
-maximum (x:xs) = max x (maximum xs)
+maximum [] = undefined
+maximum [x] = x -- Só tem um elemento, então ele é o max
+maximum (x:xs) = max x (maximum xs) -- Compare o X com o max de xs
 
 -- take
 take :: Int -> [a] -> [a]
-take 0 a = []
-take a [] = []
-take n (x:xs) = x : take (n-1) xs
+take 0 _ = []
+take _ [] = []
+take n (x:xs) = x : take (n-1) xs -- Pego elementos da lista
 
 -- drop
 drop :: Int -> [a] -> [a]
 drop 0 xs = xs
-drop a [] = []
-drop n (a:xs) = drop (n-1) xs
+drop _ [] = []
+drop n (_:xs) = drop (n-1) xs -- Removo elementos da lista
 
 -- takeWhile
 takeWhile :: (a -> Bool) -> [a] -> [a]
-takeWhile b (x : xs) = if b x then x : takeWhile b xs else []
+takeWhile b (x : xs) = if b x then x : takeWhile b xs else [] -- While true, take 
 
 -- dropWhile
 dropWhile :: (a -> Bool) -> [a] -> [a]
-dropWhile b (x : xs) = if b x then dropWhile b xs else x : xs
+dropWhile b (x : xs) = if b x then dropWhile b xs else x : xs -- While true, ignore
 
 -- tails
+
 -- init
+init :: [a] -> [a]
+init [_] = [] -- Tem um elemento, retorne vazio
+init (x:xs) = x : init xs  -- Mantém o primeiro elemento, retira o último do resto
+
 -- inits
 
 -- subsequences
 
--- any
--- all
+-- any                 
+any :: (a -> Bool) -> [a] -> Bool
+any _ [] = False -- Lista vazia, nenhum elemento satisfaz a condição (alguém satisfaz?)
+any p (x:xs) = p x || any p xs -- Testa o primeiro elemento e testa o resto da lista (ou um ou outro satisfaz?)
+
+-- all  
+all :: (a -> Bool) -> [a] -> Bool 
+all _ [] = True -- Todos satisfazem! Lista vazia = True
+all p (x:xs) = p x && all p xs -- Testa o primeiro e se todos os outros satisfazem
 
 -- and
 and :: [Bool] -> Bool
 and [] = True
-and (x:xs) = x && and xs
+and (x:xs) = x && and xs -- Testa se ambos satisfazem
 
 -- or
 or :: [Bool] -> Bool
 or [] = False
-or (x:xs) = x || or xs
+or (x:xs) = x || or xs -- Testa se um ou outro satisfaz
 
 -- concat
 concat :: [[a]] -> [a]
-concat [] = []
-concat (xs:xss) = xs ++ concat xss
+concat [] = [] -- Não há elementos para concatenar
+concat (x:xs) = x ++ concat xs  
 
 -- elem using the funciton 'any' above
 
@@ -176,25 +184,35 @@ concat (xs:xss) = xs ++ concat xss
 
 -- filter
 filter :: (a -> Bool) -> [a] -> [a]
-filter a [] = []
-filter p (x:xs)
-  | p x = x : filter p xs
-  | otherwise = filter p xs
+filter _ [] = [] -- Não há elementos para filtrar (lista vazia)
+filter f (x : xs) = if f x then (x : filter f xs) else filter f xs
 
 -- map
 map :: (a -> b) -> [a] -> [b]
-map a [] = []
+map _ [] = [] -- Não há elementos para transformar (lista vazia)
 map f (x:xs) = f x : map f xs
 
 -- cycle
+
 -- repeat
+repeat :: a -> [a]
+repeat x = x : repeat x -- Lista onde o elemento se repete infinitas vezes
+
 -- replicate
+replicate :: Int -> a -> [a]
+replicate 0 _ = []
+replicate n x = x : replicate (n-1) x -- Lista onde o elemento se repete 'n' vezes
 
 -- isPrefixOf
 -- isInfixOf
 -- isSuffixOf
 
 -- zip
+zip :: [a] -> [b] -> [(a,b)]
+zip [] _ = [] 
+zip _ [] = []
+zip (x:xs) (y:ys) = (x,y) : zip xs ys -- Combinação de duas listas (nenhuma vazia)
+
 -- zipWith
 
 -- intercalate
